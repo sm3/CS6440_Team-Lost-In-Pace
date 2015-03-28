@@ -27,7 +27,7 @@ public class FHIRContext {
     			setFormat("_format=json");
     	//Because we connect to GT FHIR server using 8443 we need to supply cert info
     	
-    	System.setProperty("javax.net.ssl.trustStore", pc.getTrustStore());
+    	System.setProperty("javax.net.ssl.trustStore",  pc.getTrustStore());
     	System.setProperty("javax.net.ssl.trustStorePassword", pc.getTrustStorePasswd());
     }
 
@@ -183,5 +183,6 @@ public static void disconnect() {
         conn.disconnect();
     }
 }
+
 
 }
