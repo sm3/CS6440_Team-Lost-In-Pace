@@ -13,7 +13,7 @@ public class ParseConfig {
 	
 	
 
-	private static final String path = "/home/michael/git/pace3/CS6440_Team-Lost-In-Pace/CS6440_Team-Lost-In-Pace/config.txt";
+	private static final String path = "/home/michael/git/pace3/config.txt";
 	
 	public ParseConfig()
 	{
