@@ -1,0 +1,9 @@
+URL=https://taurus.i3l.gatech.edu:8443/HealthPort/fhir
+
+//URL=http://fhirtest.uhn.ca/baseDstu1
+
+format=JSON
+
+
+trustStore=/usr/lib/jvm/java-1.7.0-openjdk-amd64/jre/lib/security/cacerts
+trustStorePassword=changeit
