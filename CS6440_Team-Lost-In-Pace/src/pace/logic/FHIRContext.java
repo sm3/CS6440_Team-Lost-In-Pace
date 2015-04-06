@@ -1,30 +1,28 @@
 package pace.logic;
 
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.io.*;
-
 import pace.util.*;
 
 public class FHIRContext {
 
   private static String url;
 
-    private Pace myPace;
+   
     private static String input;
     private static String format;
     static HttpURLConnection conn = null;
     
+    //Reads config.txt using ParseConfig and set up context for Pace app
     public FHIRContext()
     {
     	ParseConfig pc = new ParseConfig();
     	
     	setUrl(pc.getUrl());
     	if(pc.getFormat().equals("JSON"))
-    			setFormat("_format=json");
+    			setFormat("_format=json&_count=100");
     	//Because we connect to GT FHIR server using 8443 we need to supply cert info
     	
     	System.setProperty("javax.net.ssl.trustStore", pc.getTrustStore());
@@ -96,16 +94,14 @@ public String getFormat() {
 }
 
 public void setFormat(String format) {
-	this.format = format;
+	FHIRContext.format = format;
 }
 
-//public File getData(HttpURLConnection conn)
-//{
-	
-	
-	//return resFile;
-//}
-
+/**
+ * GET 
+ * @return
+ * @throws IOException
+ */
 public static HttpURLConnection sendGetRequest()
         throws IOException {
     URL url = new URL(getUrl()+ input + "?" + format);
@@ -118,6 +114,30 @@ public static HttpURLConnection sendGetRequest()
     return conn;
 }
 
+/**
+ * GET with multiple inputs
+ * @param inputString
+ * @return
+ * @throws IOException
+ */
+public static HttpURLConnection sendGetRequest(String inputString)
+        throws IOException {
+    URL url = new URL(getUrl()+ inputString);
+    conn = (HttpURLConnection) url.openConnection();
+    conn.setUseCaches(false);
+
+    conn.setDoInput(true); // set to true to read server's response
+    conn.setDoOutput(false); // false for  GET request
+
+    return conn;
+}
+
+/**
+ * POST
+ * @param params
+ * @return
+ * @throws IOException
+ */
 public static HttpURLConnection sendPostRequest(
         Map<String, String> params) throws IOException {
     URL url = new URL(getUrl());
@@ -152,6 +172,11 @@ public static HttpURLConnection sendPostRequest(
 
     return conn;
 }
+/**
+ * Reads response from the HttpConn and returns the input stream as a string
+ * @return
+ * @throws IOException
+ */
 
 public static String readRespone() throws IOException {
     InputStream inputStream = null;
@@ -176,8 +201,25 @@ public static String readRespone() throws IOException {
     return response;
 }
  
+/**
+ * Same as above. Returns the input stream.
+ * @return
+ * @throws IOException
+ */
+public static InputStream readJson() throws IOException {
+    InputStream inputStream = null;
+    if (conn != null) {
+        inputStream = conn.getInputStream();
+    } else {
+        throw new IOException("Connection is not established.");
+    }
 
-
+        
+    return inputStream;
+}
+/**
+ * Reset conn
+ */
 public static void disconnect() {
     if (conn != null) {
         conn.disconnect();

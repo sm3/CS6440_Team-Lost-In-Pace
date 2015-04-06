@@ -13,7 +13,7 @@ public class ParseConfig {
 	
 	
 
-	private static final String path = "./config.txt";
+	private static final String path = "C:\\Users\\Subham\\cs6440git\\PaceUIMichael\\src\\config.txt";
 	
 	public ParseConfig()
 	{
