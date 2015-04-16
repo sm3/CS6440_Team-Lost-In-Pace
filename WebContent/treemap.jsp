@@ -42,9 +42,10 @@ a.box {
 }
 
 div#welcome {
-    float:left;
-    left: 20%;
-    position: relative;
+    position: absolute;
+	float: left;
+	left: 40%;
+	top: 5px;
 }
 
 p#wel {
@@ -77,7 +78,7 @@ p#name {
 div#chart_div {
     position: absolute;
     top: 160px;
-    left: 15%;
+    left: 22%;
 }
 
 </style> 
@@ -99,8 +100,10 @@ div#chart_div {
     <div id="main">
         <a class="box" href="#" onclick="window.print();">Print</a>
         <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
-        <form id="text1">Enter Search Criteria:</br> 
-        <input type="text"></br>
+        <a class="box" href="/Pace-3/ServletHome" >Home</a> 
+        <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
+        <input type="text" name="search_id"></br>
+        <input type="hidden" name="doctor" value="${doctors}">
         <input type="submit" value="Submit">
         </form>
         <p id="date"></p>
@@ -156,12 +159,15 @@ function showStuff(text) {
                      ];
         
         var patients = JSON.parse('${json}');
+                
+        var patient_ids = JSON.parse('${pat_ids}');        
         
         var i;
-        for (i = 1; i < 49; i++) {
+        for (i = 0; i < patients.Patients.length; i++) {
         	var temp = [patients.Patients[i].patientname, tests[(Math.floor(Math.random() * tests.length))], 1, Math.floor((Math.random() * 5) + 1)];
         	arr.push(temp);
         }
+        
         
         var data = google.visualization.arrayToDataTable(arr);
 
@@ -196,6 +202,7 @@ function showStuff(text) {
             else {
                 return '<div style="background:#fd9; padding:10px; border-style:solid">' +
                        '<a href="/Pace-3/ServletDash?doctor=${doctors}&name=' + data.getValue(row, 0) + 
+                       '&pat_id=' + patient_ids[data.getValue(row, 0)] +
                        '"><span style="font-family:Courier"><b>Go to Patient Dashboard: ' + 
                        data.getValue(row, 0) +
                        '</b></span></a><br>';

@@ -2,8 +2,14 @@ package pace.servlets;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +22,10 @@ import org.json.simple.JSONObject;
 
 import pace.logic.FHIRContext;
 import pace.logic.FHIRDataParser;
+import pace.logic.Pace;
+import pace.logic.PacePatient;
+import pace.logic.PersistenceService;
+import pace.util.EntityManagerFactory;
 
 /**
  * Servlet implementation class ServletOne
@@ -34,32 +44,54 @@ public class ServletOne extends HttpServlet {
 		
 		FHIRContext ctx = new FHIRContext();
 		String[] input = new String[]{"Patient"};
-		ctx.setInput(ctx.constructInputString(input,  "/"));
-		try
-		{
-			HttpURLConnection conn = ctx.sendGetRequest();
+		ctx.setInput(ctx.constructInputString(input,  "/?&_count=100"));
+		try {
+			 
 			FHIRDataParser dp = new FHIRDataParser();
-			String result = ctx.readRespone();
-			HashMap<String, Object> map = dp.parseJSON(result);
-			
-			System.out.println("Getting submap ");
-			HashMap<Integer, String> patients = dp.getPatients(result);
-			System.out.println("++++++++++++++++++Printing++++++++++++++++++");
+			List<ca.uhn.fhir.model.dstu.resource.Patient> pts = dp.getAllPatients();
+			System.out.println("Total patients : "+ pts.size());
+			Iterator<ca.uhn.fhir.model.dstu.resource.Patient> itr = pts.iterator();
 			
 			JSONObject json = new JSONObject();
 			JSONArray pats = new JSONArray();
 			JSONObject pat;
 			
-			for (Integer key : patients.keySet()) {
+			JSONObject pat_ids = new JSONObject();
+			
+			
+			int i = 0;
+			
+			while(itr.hasNext())
+			{
+				ca.uhn.fhir.model.dstu.resource.Patient p = itr.next();
+				
 				pat = new JSONObject();
-				pat.put("patientname", patients.get(key));
-				pats.add(pat);
-				System.out.println(key);
-				System.out.println(patients.get(key));
+	    		String pat_name = p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep();
+	    		pat.put("patientname", pat_name);
+	    		//pat.put("patient_id", p.getIdentifierFirstRep().getValue().toString());
+	    		pats.add(pat);
+	    		
+	    		System.out.println("++++++++++++++++++Printing++++++++++++++++++");				
+				System.out.println("Patient name: " + p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep());
+				System.out.println("Patient id : " + p.getIdentifierFirstRep().getValue());
+				
+				
+				
+				pat_ids.put(pat_name, p.getIdentifierFirstRep().getValue().toString());
+				
+				
+				if (i >= 130){
+					break;
+				}
+				i+=1;
+				
 			}
 			
 			json.put("Patients", pats);
 			request.setAttribute("json", json);
+			
+			request.setAttribute("pat_ids", pat_ids);
+			
 						
 			
 		}
@@ -67,6 +99,7 @@ public class ServletOne extends HttpServlet {
 		{
 			System.out.println(e.toString());
 		}
+		
 		request.setAttribute("doctors", doctor);
 		RequestDispatcher rd = request.getRequestDispatcher("treemap.jsp");
 		rd.forward(request, response);

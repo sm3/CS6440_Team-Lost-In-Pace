@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.Bundle;
+import ca.uhn.fhir.model.api.IResource;
 import ca.uhn.fhir.model.dstu.composite.IdentifierDt;
 import ca.uhn.fhir.model.dstu.resource.*;
 import ca.uhn.fhir.model.primitive.IdDt;
@@ -324,7 +326,7 @@ public class FHIRDataParser {
   
 	public Patient getPatientById(String id) {
 		IdDt ptid = new IdDt(id);
-      return client.read(Patient.class, ptid);
+      return (Patient) client.read((Class<? extends IResource>) Patient.class, ptid);
 	}
 	
 /**
@@ -336,15 +338,15 @@ public class FHIRDataParser {
 		
       Bundle response = client
               .search()
-              .forResource(Patient.class)
+              .forResource((Class<? extends IResource>) Patient.class)
               .execute();
       
       System.out.println("Bundle :" + response.toString());
-      List<Patient> patients = response.getResources(Patient.class);
+      List<Patient> patients = (List<Patient>) response.getResources((Class<? extends IResource>) Patient.class);
       while (!response.getLinkNext().isEmpty()) {
      	   // load next page
      	   response = client.loadPage().next(response).execute();
-     	   patients.addAll(response.getResources(Patient.class));
+     	   patients.addAll((Collection<? extends Patient>) response.getResources((Class<? extends IResource>) Patient.class));
      	}
       return patients;
 	}

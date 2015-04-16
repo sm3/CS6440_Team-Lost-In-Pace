@@ -41,9 +41,10 @@ a.box {
 }
 
 div#welcome {
-    float:left;
-    left: 20%;
-    position: relative;
+    position: absolute;
+	float: left;
+	left: 40%;
+	top: 5px;
 }
 
 p#wel {
@@ -76,7 +77,7 @@ p#name {
 button.popup_1_open, button.popup_2_open, button.popup_3_open, button.popup_4_open,
 button.popup_5_open, button.popup_6_open, button.popup_7_open, button.popup_8_open {
     margin: 35px;
-    padding: 35px;
+    padding: 20px 35px 40px 35px;
     border: 1px solid black;
     height: auto;
     width: auto;
@@ -130,6 +131,13 @@ div.desc {
   font-weight: normal;
   width: 120px;
   margin: 5px;
+  padding: 10px;
+  max-height: 30px;
+}
+
+h2 {
+	margin: 0px;
+	padding: 0px;
 }
 
 div#popup_1, div#popup_2, div#popup_3, div#popup_4, div#popup_5, div#popup_6,
@@ -138,6 +146,17 @@ div#popup_7, div#popup_8 {
     background-color: white;
     margin: 20px;
     padding: 20px;
+}
+
+div#error {
+	position: absolute;
+	float: left;
+	left: 46%;
+	top: 100px;
+	color: red;
+	margin: 0px;
+	padding: 0px;
+	font-weight: bold;
 }
 
 </style> 
@@ -170,11 +189,19 @@ function showStuff(text) {
     <div id="main">
         <a class="box" href="#" onclick="window.print();">Print</a>
         <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
-        <form id="text1">Enter Search Criteria:</br> <input type="text"></br><input type="submit" value="Submit">
+        <a class="box" href="/Pace-3/ServletHome" >Home</a> 
+        <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
+        <input type="text" name="search_id"></br>
+        <input type="hidden" name="doctor" value="${doctors}">
+        <input type="submit" value="Submit">
         </form>
         <p id="date"></p>
     </div>
 </section>
+
+<div id="error">
+	${error}
+</div>
 
 <section>
     <button class="popup_1_open">
@@ -182,12 +209,19 @@ function showStuff(text) {
         <div class="desc">Add a description here</div>
     </button>
     <button class="popup_2_open">
-        <h2>Heading 2</h2>
-        <div class="desc">Add a description here</div>
+        <h2>BMI Exam</h2>
+        <div class="desc">Weight: 
+        <br> Height:
+        </div>
     </button>
     <button class="popup_3_open">
-        <h2>Heading 3</h2>
-        <div class="desc">Add a description here</div>
+        <h2>Vitals</h2>
+        <div class="desc">Body Weight:
+        <br> Body Height:
+        <br> Blood Pressure:
+        <br> Body Temperature:
+        <br> Pulse:
+        </div>
     </button>
     <button class="popup_4_open">
         <h2>Heading 4</h2>

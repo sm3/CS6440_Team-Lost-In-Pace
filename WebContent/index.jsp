@@ -41,9 +41,10 @@ a.box {
 }
 
 div#welcome {
-    float:left;
-    left: 20%;
-    position: relative;
+    position: absolute;
+	float: left;
+	left: 40%;
+	top: 5px;
 }
 
 p#wel {
@@ -74,12 +75,12 @@ p#name {
 }
 
 div#welcome_form {
-	position: relative;
+	position: absolute;
 	border: 1px solid black;
 	float: left;
 	left: 45%;
 	padding: 10px;
-	top: 80px;
+	top: 175px;
 }
 
 </style> 
@@ -93,7 +94,8 @@ div#welcome_form {
     </div>
     <div id="welcome">
         <p id="wel">Performance Dashboard: </br>
-        WELCOME</p>
+        WELCOME
+        </p>
     </div>
 </header>
 
@@ -101,8 +103,9 @@ div#welcome_form {
     <div id="main">
         <a class="box" href="#" onclick="window.print();">Print</a>
         <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
-        <form id="text1">Enter Search Criteria:</br> 
-        <input type="text"></br>
+        <a class="box" href="/Pace-3/ServletHome" >Home</a> 
+        <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
+        <input type="text" name="search_id"></br>
         <input type="submit" value="Submit">
         </form>
         <p id="date"></p>
