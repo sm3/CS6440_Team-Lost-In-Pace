@@ -173,7 +173,7 @@ public class contextTest {
 		
 	}
 	
-	
+	*/
 	
 	@Test
 	public void testGetPatientByID()
@@ -181,14 +181,12 @@ public class contextTest {
 		try {
 			 
 			FHIRDataParser dp = new FHIRDataParser();
-			ca.uhn.fhir.model.dstu.resource.Patient p = dp.getPatientById("Patient/3.568001602-01");
+			ca.uhn.fhir.model.dstu.resource.Patient p = dp.getPatientById("Patient/1.1");
 			System.out.println("Get patient by ID : "+ p.getName().toString());
 			
-			DateTimeDt q = p.getBirthDate();
-			System.out.println("Birth Date : " + (q.getValue()));
-			
-			BoundCodeableConceptDt<AdministrativeGenderCodesEnum> g = p.getGender();
-			System.out.println("Gender : " + (g.getValueAsEnum()));
+			System.out.println("Patient birth date: " + p.getBirthDate().getValueAsString());
+
+			System.out.println("Patient gender : " + p.getGenderElement().getText().getValue());
 			
 			
 		}
@@ -198,7 +196,7 @@ public class contextTest {
 		}
 	}
 
-	*/
+	/*
 	
 	@Test
 	public void testgetPatientObservation()
@@ -221,7 +219,7 @@ public class contextTest {
 				if(q!=null)
 
 				{
-
+				
 				System.out.println("Observation value : " + (q.getValue()).getValueAsString());
 
 				System.out.println("Observation units : " + q.getUnits());
@@ -241,7 +239,7 @@ public class contextTest {
 	}
 
 	
-	
+	*/
 	
 
 }

@@ -77,7 +77,7 @@ p#name {
 button.popup_1_open, button.popup_2_open, button.popup_3_open, button.popup_4_open,
 button.popup_5_open, button.popup_6_open, button.popup_7_open, button.popup_8_open {
     margin: 35px;
-    padding: 20px 35px 40px 35px;
+    padding: 20px 35px 70px 35px;
     border: 1px solid black;
     height: auto;
     width: auto;
@@ -159,21 +159,227 @@ div#error {
 	font-weight: bold;
 }
 
+
+
 </style> 
+
+
+<script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart', 'bar', 'line']
+            }]
+          }"></script>
+          
+<script type="text/javascript">
+var obs_data = JSON.parse('${data_obs_json}');
+
+var bmi_calc = function(height, weight) {
+	return weight / (height/100);
+}
+
+var bmi_status = function(bmi) {
+	var status = "";
+	if (bmi < 25) {
+		status = "Normal";
+		document.getElementById("bmi_square").style.background = "green";
+		return status;
+	}
+	if (bmi >= 25 && bmi < 30) {
+		status = "Overweight";
+		document.getElementById("bmi_square").style.background = "yellow";
+		return status;
+	}
+	if (bmi >= 30) {
+		status = "Obese";
+		document.getElementById("bmi_square").style.background = "red";
+		return status;
+	}
+}
+</script>
+
+<script type="text/javascript">
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+	  
+	  var arr = [ ['Visit', 'Weight'] ];
+	  
+	  
+	  var i;
+      for (i = 0; i < obs_data.weight.length; i++) {
+      	var temp = [i.toString(), parseInt(obs_data.weight[i].value)];
+      	arr.push(temp);
+      }
+	  
+    var data = google.visualization.arrayToDataTable(arr);
+
+    var options = {
+      title: 'Weight', 
+      hAxis: {title: 'Visit'},
+      vAxis: {title: 'kg'},
+      width: 900,
+      height: 500
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('wdiv'));
+
+    chart.draw(data, options);
+  }
+</script>
+
+<script type="text/javascript">
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+	  
+	  var arr = [ ['Visit', 'Height'] ];
+	  
+	  
+	  var i;
+      for (i = 0; i < obs_data.height.length; i++) {
+      	var temp = [i.toString(), parseInt(obs_data.height[i].value)];
+      	arr.push(temp);
+      }
+	  
+    var data = google.visualization.arrayToDataTable(arr);
+
+    var options = {
+      title: 'Height',
+      hAxis: {title: 'Visit'},
+      vAxis: {title: 'cm'},
+      width: 900,
+      height: 500
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('hdiv'));
+
+    chart.draw(data, options);
+  }
+</script>
+
+<script>
+google.setOnLoadCallback(drawChart);
+function drawChart() {
+	
+	var arr = [ ['Visit', 'Systolic BP', 'Diastolic BP'] ];
+	
+	var i;
+    for (i = 0; i < obs_data.systolic_bp.length; i++) {
+    	var temp = [i.toString(), parseInt(obs_data.systolic_bp[i].value), parseInt(obs_data.diastolic_bp[i].value)];
+    	arr.push(temp);
+    }
+	
+  var data = google.visualization.arrayToDataTable(arr);
+
+  var options = {
+    title: 'Blood Pressure',
+    hAxis: {title: 'Visit'},
+    vAxis: {title: 'mmHg'},
+    width: 900,
+    height: 500
+  };
+
+  var chart = new google.charts.Bar(document.getElementById('bpdiv'));
+
+  chart.draw(data, options);
+}
+</script>
+
+<script type="text/javascript">
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+	  
+	  var arr = [ ['Visit', 'Body Temperature'] ];
+	  
+	  
+	  var i;
+      for (i = 0; i < obs_data.body_temperature.length; i++) {
+      	var temp = [i.toString(), parseInt(obs_data.body_temperature[i].value)];
+      	arr.push(temp);
+      }
+	  
+    var data = google.visualization.arrayToDataTable(arr);
+
+    var options = {
+      title: 'Body Temperature',
+      hAxis: {title: 'Visit'},
+      vAxis: {title: 'C'},
+      width: 900,
+      height: 500
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('tempdiv'));
+
+    chart.draw(data, options);
+  }
+</script>
+
+<script type="text/javascript">
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+	  
+	  var arr = [ ['Visit', 'Heart Beat'] ];
+	  
+	  
+	  var i;
+      for (i = 0; i < obs_data.heart_beat.length; i++) {
+      	var temp = [i.toString(), parseInt(obs_data.heart_beat[i].value)];
+      	arr.push(temp);
+      }
+	  
+    var data = google.visualization.arrayToDataTable(arr);
+
+    var options = {
+      title: 'Heart Beat',
+      hAxis: {title: 'Visit'},
+      vAxis: {title: 'bpm'},
+      width: 900,
+      height: 500
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('tempdiv'));
+
+    chart.draw(data, options);
+  }
+</script>
+
+<script type="text/javascript">
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+	  
+	  var arr = [ ['Visit', 'BMI'] ];
+	  
+	  
+	  var i;
+      for (i = 0; i < obs_data.weight.length; i++) {
+      	var temp = [i.toString(), Math.round(bmi_calc(obs_data.height[i].value, obs_data.weight[i].value))];
+      	arr.push(temp);
+      }
+	  
+    var data = google.visualization.arrayToDataTable(arr);
+
+    var options = {
+      title: 'BMI', 
+      hAxis: {title: 'Visit'},
+      vAxis: {title: 'BMI'},
+      width: 900,
+      height: 500
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('popup_2'));
+
+    chart.draw(data, options);
+  }
+</script>
 
 </head>
 <body>
-
-<script type="text/javascript">
-function showStuff(text) {
-    if (document.getElementById(text).style.display === 'block') {
-        document.getElementById(text).style.display = 'none';
-    }
-    else {
-        document.getElementById(text).style.display = 'block';
-    }
-}
-</script>
 
 <header>
     <div id="logo">
@@ -189,7 +395,7 @@ function showStuff(text) {
     <div id="main">
         <a class="box" href="#" onclick="window.print();">Print</a>
         <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
-        <a class="box" href="/Pace-3/ServletHome" >Home</a> 
+        <a class="box" href="/Pace-3/index.jsp" >Home</a> 
         <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
         <input type="text" name="search_id"></br>
         <input type="hidden" name="doctor" value="${doctors}">
@@ -208,19 +414,23 @@ function showStuff(text) {
         <h2>${name}</h2>
         <div class="desc">Add a description here</div>
     </button>
-    <button class="popup_2_open">
+    <button class="popup_2_open" id="bmi_square">
         <h2>BMI Exam</h2>
-        <div class="desc">Weight: 
-        <br> Height:
+        <div class="desc">
+	        <div id="weight">Weight: </div>
+	        <div id="height">Height: </div>
+	        <div id="bmi_stat">BMI Status: </div>
+	        <div id="bmi">BMI: </div>
         </div>
     </button>
     <button class="popup_3_open">
         <h2>Vitals</h2>
-        <div class="desc">Body Weight:
-        <br> Body Height:
-        <br> Blood Pressure:
-        <br> Body Temperature:
-        <br> Pulse:
+        <div class="desc">
+        <div id="vital_weight">Body Weight: </div>
+        <div id="vital_height">Body Height: </div>
+        <div id="vital_bp">Blood Pressure: </div>
+        <div id="vital_temp">Body Temperature: </div>
+        <div id="vital_pulse">Pulse: </div>
         </div>
     </button>
     <button class="popup_4_open">
@@ -258,8 +468,7 @@ function showStuff(text) {
     <button class="popup_2_close">Close</button>
 </div>
 <div id="popup_3">
-    <p>Popup 3 stuff here</p>
-    <button class="popup_3_close">Close</button>
+    
 </div>
 <div id="popup_4">
     <p>Popup 4 stuff here</p>
@@ -282,7 +491,11 @@ function showStuff(text) {
     <button class="popup_8_close">Close</button>
 </div>
 
-
+<div id="hdiv"></div>
+<div id="wdiv"></div>
+<div id="bpdiv"></div>
+<div id="tempdiv"></div>
+<div id="pulsediv"></div>
 
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 
@@ -324,6 +537,38 @@ function showStuff(text) {
 
 <script>
 document.getElementById("date").innerHTML = Date();
+</script>
+
+<script type="text/javascript">
+function showStuff(text) {
+    if (document.getElementById(text).style.display === 'block') {
+        document.getElementById(text).style.display = 'none';
+    }
+    else {
+        document.getElementById(text).style.display = 'block';
+    }
+}
+</script>
+
+<script>
+document.getElementById("weight").innerHTML = "Weight: " + obs_data.weight[obs_data.weight.length-1].value + "kg";
+document.getElementById("height").innerHTML = "Height: " + obs_data.height[obs_data.height.length-1].value + "cm";
+document.getElementById("bmi").innerHTML = "BMI: " + Math.round(bmi_calc(obs_data.height[obs_data.height.length-1].value, obs_data.weight[obs_data.weight.length-1].value));
+document.getElementById("bmi_stat").innerHTML = "BMI Status: " + bmi_status(Math.round(bmi_calc(obs_data.height[obs_data.weight.length-1].value, obs_data.weight[obs_data.weight.length-1].value)));
+
+
+document.getElementById("vital_weight").innerHTML = "Weight: " + obs_data.weight[obs_data.weight.length-1].value + "kg";
+document.getElementById("vital_height").innerHTML = "Height: " + obs_data.height[obs_data.height.length-1].value + "cm";
+document.getElementById("vital_bp").innerHTML = "Blood Pressure: " + obs_data.systolic_bp[obs_data.systolic_bp.length-1].value + " / " + obs_data.diastolic_bp[obs_data.diastolic_bp.length-1].value;
+document.getElementById("vital_temp").innerHTML = "Body Temperature: " + obs_data.body_temperature[obs_data.body_temperature.length-1].value + "C";
+document.getElementById("vital_pulse").innerHTML = "Pulse: " + obs_data.heart_beat[obs_data.heart_beat.length-1].value + "bpm";
+
+document.getElementById("popup_3").appendChild(document.getElementById("wdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("hdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("bpdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("tempdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("pulsediv"));
+
 </script>
 
 </body>
