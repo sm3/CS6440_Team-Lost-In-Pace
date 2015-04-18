@@ -49,7 +49,7 @@ public class PacePatient implements Serializable {
     @OneToMany
     private List<ChronicDisease> conditions = new ArrayList<ChronicDisease>();
     @OneToMany
-    private List<LabTest> tests;
+    private List<LabTest> tests = new ArrayList<LabTest>();
     
     
     

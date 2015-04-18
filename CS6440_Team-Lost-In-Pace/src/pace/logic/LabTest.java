@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @NamedQueries({
    
     @NamedQuery(name = "LabTest.findById", query = "SELECT s FROM LabTest s WHERE s.id = :id"),
-    
+    @NamedQuery(name = "LabTest.findAll", query = "SELECT s FROM LabTest s")
     
 })
 public class LabTest implements Serializable {
@@ -28,6 +28,9 @@ public class LabTest implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private String id;
+    @Basic(optional = true)
+    @Column(name = "testID")
+    private String testID;
     @Basic(optional = true)
     @Column(name = "name")
     private String name;
@@ -68,6 +71,18 @@ public class LabTest implements Serializable {
 	}
 
  
+	
+    public String getTestID() {
+		return testID;
+	}
+
+	public void setTestID(String testID) {
+		this.testID = testID;
+	}
+
+
+
+
 
 
 

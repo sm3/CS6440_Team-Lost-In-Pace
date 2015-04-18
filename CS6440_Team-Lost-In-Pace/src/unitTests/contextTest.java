@@ -1,6 +1,8 @@
 package unitTests;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -26,6 +28,7 @@ import org.junit.Test;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.Bundle;
+import ca.uhn.fhir.model.dstu.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu.resource.*;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.UriDt;
@@ -76,7 +79,7 @@ public class contextTest {
 			EntityManager em = emf.createEntityManager();
 			ps.getPatientData();
 			ps.getPatientConditions();
-			//ps.getPatientObservations();
+			ps.getPatientObservations();
 			
 			Thread.sleep(1200);
 			
@@ -87,14 +90,62 @@ public class contextTest {
 			    if(conn.isValid(1000))
 			    {
 			    	System.out.println("CONNECTED" + '\n');
+			    	//Mcpherson
 			    	TypedQuery<PacePatient> query = em.createNamedQuery(
+							"PacePatient.findByLastName", PacePatient.class);
+			    	query.setParameter("name", "Mcpherson");
+			    	
+			    	List<PacePatient> patients = query.getResultList();
+			    	for(PacePatient p : patients)
+			    	{
+			    		System.out.println("id " +  p.getPatientID() + " , Name : " + p.getFirstName() + ", " + p.getLastName());
+			    		
+			    		
+			    		
+			    	}
+			    	
+			    	/*TypedQuery<PacePatient> query = em.createNamedQuery(
 							"PacePatient.findAll", PacePatient.class);
 			    	List<PacePatient> patients = query.getResultList();
 			    	for(PacePatient p : patients)
 			    	{
 			    		System.out.println("id " +  p.getPatientID() + " , Name : " + p.getFirstName() + ", " + p.getLastName());
 			    	
+			    	}*/
+			    	/*TypedQuery<ChronicDisease> query2 = em.createNamedQuery(
+							"ChronicDisease.findAll", ChronicDisease.class);
+			    	List<ChronicDisease> diseases = query2.getResultList();
+			    	
+			    	for(ChronicDisease p : diseases)
+				    	{
+			    		
+				    		System.out.println("id " +  p.getDiseaseID() + " , Name : " + p.getName());
+			    			
+				    	}
+			    	
+			    	*/
+			    	
+			    	TypedQuery<LabTest> query3 = em.createNamedQuery(
+							"LabTest.findAll", LabTest.class);
+			    	
+			    	List<LabTest> tests = query3.getResultList();
+			    	
+			    	
+			    	try
+			    	{
+			    		for(LabTest p : tests)
+				    	{
+			    		 String s ="id " +  p.getId() + " , Name : " + p.getName() + ", Value " + p.getValue() + "/" +p.getUnit();
+				    	
+				    	}
 			    	}
+			    	catch(Exception e)
+			    	{
+			    		e.printStackTrace();
+			    	}
+			    	
+			    	
+			    		
 			   
 			    }
 			    
@@ -124,8 +175,10 @@ public class contextTest {
 			while(itr.hasNext())
 			{
 				Patient p = itr.next();
-				System.out.println("Patient name: " + p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep());
-				System.out.println("Patient id : " + p.getIdentifierFirstRep().getValue().getValue());
+				//System.out.println("Patient name: " + p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep());
+				//System.out.println("Patient id : " + p.getIdentifierFirstRep().getValue().getValue());
+				System.out.println("Patient birth date: " + p.getBirthDate().getValueAsString());
+				System.out.println("Patient gender : " + p.getGenderElement().getText().getValue());
 			}
 			
 		}
@@ -169,6 +222,7 @@ public class contextTest {
 			Patient p = dp.getPatientById("Patient/3.568001602-01");
 			System.out.println("Get patient by ID : "+ p.getName().toString());
 			
+			
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -193,6 +247,14 @@ public class contextTest {
 				Observation o = itr.next();
 				System.out.println("Observation code: " + o.getName().getCodingFirstRep().getCode().getValue());
 				System.out.println("Observation name : " + o.getName().getCodingFirstRep().getDisplay().getValue());
+				QuantityDt q = (QuantityDt) o.getValue();
+				if(q!=null)
+				{
+				System.out.println("Observation value : " + q.getValue().getValueAsString());
+				
+				System.out.println("Observation units : " + q.getUnits());
+			
+				}
 			}
 			
 		}
@@ -204,7 +266,33 @@ public class contextTest {
 	}
 
 	
-	
+	@Test
+	public void testgetPatientPrescriptions()
+	{
+		
+		try {
+			 
+			FHIRDataParser dp = new FHIRDataParser();
+			List<MedicationPrescription> p = dp.getAllPrescriptionsForPatient(resid);
+			System.out.println("Total Medications : "+ p.size());
+			Iterator<MedicationPrescription> itr = p.iterator();
+			while(itr.hasNext())
+			{
+				MedicationPrescription o = itr.next();
+			
+				System.out.println("Medication name : " + o.getMedication().getDisplay().getValue());
+				
+				
+			}
+			
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 	
 
 }

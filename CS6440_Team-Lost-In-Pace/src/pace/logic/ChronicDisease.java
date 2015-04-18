@@ -20,6 +20,7 @@ import javax.persistence.Table;
 @NamedQueries({
    
     @NamedQuery(name = "ChronicDisease.findById", query = "SELECT s FROM ChronicDisease s WHERE s.diseaseID = :id"),
+    @NamedQuery(name = "ChronicDisease.findAll", query = "SELECT s FROM ChronicDisease s")
   
     
 })

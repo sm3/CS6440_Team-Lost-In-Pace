@@ -127,7 +127,7 @@ public class PersistenceService {
         			LabTest lt = new LabTest();
         			if(o.get("code")!=null)
         			{
-        				lt.setId(o.get("code"));
+        				lt.setTestID(o.get("code"));
         				lt.setName(o.get("name"));
         				if(o.get("value") !=null)
         				{
