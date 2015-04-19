@@ -413,24 +413,28 @@ public class FHIRDataParser {
   	return observations;
 	}
 	
-	public List<MedicationPrescription> getMedicationsForPatient (String id) {
-				
-		Bundle response = client
-	    		.search()
-	    		.forResource(MedicationPrescription.class)
-	    		.where(MedicationPrescription.PATIENT.hasId(id))
-	    		.execute();
+	/**
+	  * returns all prescriptions for patient - HAPI
+	  * @param id
+	  * @return
+	  */
 		
-		List<MedicationPrescription> medication_prescription = response.getResources(MedicationPrescription.class);
 		
-		while (!response.getLinkNext().isEmpty()) {
-		  	   // load next page
-		  	   response = client.loadPage().next(response).execute();
-		  	 medication_prescription.addAll(response.getResources(MedicationPrescription.class));
-		  	}
-		  	return medication_prescription;
-				
-	}
+		
+		public List<MedicationPrescription> getAllPrescriptionsForPatient(String id) {
+		   
+			String searchstr = serverBase + "MedicationPrescription?subject:Patient=" + id;
+		    UriDt searchurl = new UriDt(searchstr);
+		    Bundle response = client.search(searchurl);
+
+		    List<MedicationPrescription> prescriptions = response.getResources(MedicationPrescription.class);
+		    while (!response.getLinkNext().isEmpty()) {
+	    	  
+	    	   response = client.loadPage().next(response).execute();
+	    	   prescriptions.addAll(response.getResources(MedicationPrescription.class));
+	    	}
+		    return prescriptions;
+		}
 
 	 
 }

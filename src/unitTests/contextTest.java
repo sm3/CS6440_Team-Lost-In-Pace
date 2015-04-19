@@ -252,23 +252,34 @@ public class contextTest {
 	*/
 	
 	@Test
-	public void testgetPatientMedication() {
-		
+	public void testgetPatientPrescriptions()
+	{
 		
 		try {
 			 
 			FHIRDataParser dp = new FHIRDataParser();
-			List<MedicationPrescription> med_pres = dp.getMedicationsForPatient("Patient/"+resid);
-			System.out.println("Total Observations : "+ med_pres.size());
-			Iterator<MedicationPrescription> itr = med_pres.iterator();
+			List<MedicationPrescription> p = dp.getAllPrescriptionsForPatient(resid);
+			System.out.println("Total Medications : "+ p.size());
+			Iterator<MedicationPrescription> itr = p.iterator();
 			while(itr.hasNext())
 			{
-				MedicationPrescription m = itr.next();
-				System.out.println("MedicationPrescription Resource name: " + m.getResourceName());
-				System.out.println("MedicationPrescription Date Written : " + m.getDateWrittenElement().getValueAsString());		
+				MedicationPrescription o = itr.next();
+			
+				System.out.println("Medication name : " + o.getMedication().getDisplay().getValue());
+				
+				System.out.println("Date Written : " + o.getDateWrittenElement().getValueAsString());
+				
+				System.out.println("Prescriber : " + o.getPrescriber().getDisplay().getValue());
+				
+				System.out.println("Dosage quantity : " + o.getDosageInstructionFirstRep().getDoseQuantity().getValue());
+				
+				System.out.println("Dosage instruction numerator : " + o.getDosageInstructionFirstRep().getMaxDosePerPeriod().getNumerator().getValue());
+				
+				System.out.println("Dosage instruction denominator : " + o.getDosageInstructionFirstRep().getMaxDosePerPeriod().getDenominator().getValue());
+				
+				System.out.println("Status : " + o.getStatus().getValue());
+				
 			}
-			
-			
 			
 		}
 		catch (Exception e) {

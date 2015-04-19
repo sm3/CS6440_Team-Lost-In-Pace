@@ -2,6 +2,7 @@ package pace.servlets;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.json.simple.parser.JSONParser;
 
 import pace.logic.FHIRDataParser;
 import ca.uhn.fhir.model.dstu.composite.QuantityDt;
+import ca.uhn.fhir.model.dstu.resource.MedicationPrescription;
 import ca.uhn.fhir.model.dstu.resource.Observation;
 
 /**
@@ -60,8 +62,8 @@ public class ServletDash extends HttpServlet {
 			
 			JSONObject value;
 			
-			String last_weight = null;
-			
+			int i = 0;
+						
 			while(itr.hasNext())
 			{
 				Observation o = itr.next();
@@ -80,9 +82,6 @@ public class ServletDash extends HttpServlet {
 		
 						
 						if (obs_name.equals(obs_array[0])){
-							last_weight = q.getValue().getValueAsString();
-							System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-							System.out.println("last weight : " + last_weight);
 							weight.add(value);
 						}
 						if (obs_name.equals(obs_array[1])){
@@ -101,6 +100,11 @@ public class ServletDash extends HttpServlet {
 							heart_beat.add(value);
 						}
 						
+						if (i >= 75){
+							break;
+						}
+						i+=1;
+						
 					}
 				}
 			}
@@ -113,6 +117,79 @@ public class ServletDash extends HttpServlet {
 			data_obs_json.put("heart_beat", heart_beat);
 			
 			request.setAttribute("data_obs_json", data_obs_json);
+			
+			
+			JSONObject data_meds_json = new JSONObject();
+			
+			JSONArray medication = new JSONArray();
+			JSONArray date_written = new JSONArray();
+			JSONArray prescriber = new JSONArray();
+			JSONArray status = new JSONArray();
+			
+			JSONObject med_value;
+			JSONObject date_value;
+			JSONObject pres_value;
+			JSONObject stat_value;
+			
+			//JSONObject total = new JSONObject();
+			
+			List<MedicationPrescription> p = dp.getAllPrescriptionsForPatient(pat_id);
+			
+			//total.put("value", p.size());
+			System.out.println("Total Medications : "+ p.size());
+			
+			Iterator<MedicationPrescription> m_itr = p.iterator();
+			
+			int j = 0;
+			//List<String> med_names = new ArrayList<String>();
+			
+			while(m_itr.hasNext())
+			{
+				MedicationPrescription o = m_itr.next();
+				
+				String med = o.getMedication().getDisplay().getValue();
+				
+				//if (!Arrays.asList(med_names).contains(med)){
+			
+					med_value = new JSONObject();
+					med_value.put("value", med);
+					medication.add(med_value);
+					System.out.println("Medication name : " + o.getMedication().getDisplay().getValue());
+					
+					date_value = new JSONObject();
+					date_value.put("value", o.getDateWrittenElement().getValueAsString());
+					date_written.add(date_value);
+					System.out.println("Date Written : " + o.getDateWrittenElement().getValueAsString());
+					
+					pres_value = new JSONObject();
+					pres_value.put("value", o.getPrescriber().getDisplay().getValue());
+					prescriber.add(pres_value);
+					System.out.println("Prescriber : " + o.getPrescriber().getDisplay().getValue());
+					
+					stat_value = new JSONObject();
+					stat_value.put("value", o.getStatus().getValue());
+					status.add(stat_value);
+					System.out.println("Status : " + o.getStatus().getValue());
+					
+					if (j > 3){
+						break;
+					}
+					j+=1;
+					
+					//med_names.add(med);
+				
+				//}
+				
+			}
+			
+			data_meds_json.put("medication", medication);
+			data_meds_json.put("date_written", date_written);
+			data_meds_json.put("prescriber", prescriber);
+			data_meds_json.put("status", status);
+			
+			//data_meds_json.put("total", total);
+			
+			request.setAttribute("data_meds_json", data_meds_json);
 			
 			
 		}
