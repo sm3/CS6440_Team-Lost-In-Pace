@@ -163,6 +163,11 @@ div#error {
 
 </style> 
 
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+
+<script src="http://vast-engineering.github.io/jquery-popup-overlay/jquery.popupoverlay.js"></script>
+
+
 
 <script type="text/javascript"
           src="https://www.google.com/jsapi?autoload={
@@ -176,11 +181,14 @@ div#error {
 <script type="text/javascript">
 var obs_data = JSON.parse('${data_obs_json}');
 
-var bmi_calc = function(height, weight) {
+</script>
+
+<script>
+function bmi_calc(height, weight) {
 	return weight / (height/100);
 }
 
-var bmi_status = function(bmi) {
+function bmi_status(bmi) {
 	var status = "";
 	if (bmi < 25) {
 		status = "Normal";
@@ -198,7 +206,180 @@ var bmi_status = function(bmi) {
 		return status;
 	}
 }
+
 </script>
+
+
+
+</head>
+<body>
+
+<header>
+    <div id="logo">
+        <p id="name">PACE</p>
+    </div>
+    <div id="welcome">
+        <p id="wel">Performance Dashboard: </br>
+        WELCOME ${doctors}</p>
+    </div>
+</header>
+
+<section>
+    <div id="main">
+        <a class="box" href="#" onclick="window.print();">Print</a>
+        <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
+        <a class="box" href="/Pace-3/index.jsp" >Home</a> 
+        <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
+        <input type="text" name="search_id"></br>
+        <input type="hidden" name="doctor" value="${doctors}">
+        <input type="submit" value="Submit">
+        </form>
+        <p id="date"></p>
+    </div>
+</section>
+
+<div id="error">
+	${error}
+</div>
+
+<section>
+    <button class="popup_1_open">
+        <h2>${name}</h2>
+        <div class="desc">Add a description here</div>
+    </button>
+    <button class="popup_2_open" id="bmi_square">
+        <h2>BMI Exam</h2>
+        <div class="desc">
+	        <div id="weight">Weight: </div>
+	        <div id="height">Height: </div>
+	        <div id="bmi_stat">BMI Status: </div>
+	        <div id="bmi">BMI: </div>
+        </div>
+    </button>
+    <button class="popup_3_open" id="vitals_square">
+        <h2>Vitals</h2>
+        <div class="desc">
+        <div id="vital_weight">Body Weight: </div>
+        <div id="vital_height">Body Height: </div>
+        <div id="vital_bp">Blood Pressure: </div>
+        <div id="vital_temp">Body Temperature: </div>
+        <div id="vital_pulse">Pulse: </div>
+        </div>
+    </button>
+    <button class="popup_4_open">
+        <h2>Heading 4</h2>
+        <div class="desc">Add a description here</div>
+    </button>
+</section>
+
+<section>
+    <button class="popup_5_open">
+        <h2>Heading 5</h2>
+        <div class="desc">Add a description here</div>
+    </button>
+    <button class="popup_6_open">
+        <h2>Heading 6</h2>
+        <div class="desc">Add a description here</div>
+    </button>
+    <button class="popup_7_open">
+        <h2>Heading 7</h2>
+        <div class="desc">Add a description here</div>
+    </button>
+    <button class="popup_8_open">
+        <h2>Heading 8</h2>
+        <div class="desc">Add a description here</div>
+    </button>
+</section>
+
+
+<div id="popup_1">
+    <p>Popup 1 stuff here</p>
+    <button class="popup_1_close">Close</button>
+</div>
+<div id="popup_2">
+    <p>Popup 2 stuff here</p>
+    <button class="popup_2_close">Close</button>
+</div>
+<div id="popup_3">
+    
+</div>
+<div id="popup_4">
+    <p>Popup 4 stuff here</p>
+    <button class="popup_4_close">Close</button>
+</div>
+<div id="popup_5">
+    <p>Popup 5 stuff here</p>
+    <button class="popup_5_close">Close</button>
+</div>
+<div id="popup_6">
+    <p>Popup 6 stuff here</p>
+    <button class="popup_6_close">Close</button>
+</div>
+<div id="popup_7">
+    <p>Popup 7 stuff here</p>
+    <button class="popup_7_close">Close</button>
+</div>
+<div id="popup_8">
+    <p>Popup 8 stuff here</p>
+    <button class="popup_8_close">Close</button>
+</div>
+
+<div id="wdiv"></div>
+<div id="hdiv"></div>
+<div id="bpdiv"></div>
+<div id="tempdiv"></div>
+<div id="pulsediv"></div>
+
+
+<script>
+    $(document).ready(function() {
+      $('#popup_1').popup();
+    });
+
+    $(document).ready(function() {
+      $('#popup_2').popup();
+    });
+    
+    $(document).ready(function() {
+      $('#popup_3').popup();
+    });
+
+    $(document).ready(function() {
+      $('#popup_4').popup();
+    });
+    
+    $(document).ready(function() {
+      $('#popup_5').popup();
+    });
+
+    $(document).ready(function() {
+      $('#popup_6').popup();
+    });
+    
+    $(document).ready(function() {
+      $('#popup_7').popup();
+    });
+
+    $(document).ready(function() {
+      $('#popup_8').popup();
+    });
+</script>
+
+<script>
+document.getElementById("date").innerHTML = Date();
+</script>
+
+<script type="text/javascript">
+function showStuff(text) {
+    if (document.getElementById(text).style.display === 'block') {
+        document.getElementById(text).style.display = 'none';
+    }
+    else {
+        document.getElementById(text).style.display = 'block';
+    }
+}
+</script>
+
 
 <script type="text/javascript">
   google.setOnLoadCallback(drawChart);
@@ -378,179 +559,17 @@ function drawChart() {
   }
 </script>
 
-</head>
-<body>
-
-<header>
-    <div id="logo">
-        <p id="name">PACE</p>
-    </div>
-    <div id="welcome">
-        <p id="wel">Performance Dashboard: </br>
-        WELCOME ${doctors}</p>
-    </div>
-</header>
-
-<section>
-    <div id="main">
-        <a class="box" href="#" onclick="window.print();">Print</a>
-        <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
-        <a class="box" href="/Pace-3/index.jsp" >Home</a> 
-        <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
-        <input type="text" name="search_id"></br>
-        <input type="hidden" name="doctor" value="${doctors}">
-        <input type="submit" value="Submit">
-        </form>
-        <p id="date"></p>
-    </div>
-</section>
-
-<div id="error">
-	${error}
-</div>
-
-<section>
-    <button class="popup_1_open">
-        <h2>${name}</h2>
-        <div class="desc">Add a description here</div>
-    </button>
-    <button class="popup_2_open" id="bmi_square">
-        <h2>BMI Exam</h2>
-        <div class="desc">
-	        <div id="weight">Weight: </div>
-	        <div id="height">Height: </div>
-	        <div id="bmi_stat">BMI Status: </div>
-	        <div id="bmi">BMI: </div>
-        </div>
-    </button>
-    <button class="popup_3_open">
-        <h2>Vitals</h2>
-        <div class="desc">
-        <div id="vital_weight">Body Weight: </div>
-        <div id="vital_height">Body Height: </div>
-        <div id="vital_bp">Blood Pressure: </div>
-        <div id="vital_temp">Body Temperature: </div>
-        <div id="vital_pulse">Pulse: </div>
-        </div>
-    </button>
-    <button class="popup_4_open">
-        <h2>Heading 4</h2>
-        <div class="desc">Add a description here</div>
-    </button>
-</section>
-
-<section>
-    <button class="popup_5_open">
-        <h2>Heading 5</h2>
-        <div class="desc">Add a description here</div>
-    </button>
-    <button class="popup_6_open">
-        <h2>Heading 6</h2>
-        <div class="desc">Add a description here</div>
-    </button>
-    <button class="popup_7_open">
-        <h2>Heading 7</h2>
-        <div class="desc">Add a description here</div>
-    </button>
-    <button class="popup_8_open">
-        <h2>Heading 8</h2>
-        <div class="desc">Add a description here</div>
-    </button>
-</section>
 
 
-<div id="popup_1">
-    <p>Popup 1 stuff here</p>
-    <button class="popup_1_close">Close</button>
-</div>
-<div id="popup_2">
-    <p>Popup 2 stuff here</p>
-    <button class="popup_2_close">Close</button>
-</div>
-<div id="popup_3">
-    
-</div>
-<div id="popup_4">
-    <p>Popup 4 stuff here</p>
-    <button class="popup_4_close">Close</button>
-</div>
-<div id="popup_5">
-    <p>Popup 5 stuff here</p>
-    <button class="popup_5_close">Close</button>
-</div>
-<div id="popup_6">
-    <p>Popup 6 stuff here</p>
-    <button class="popup_6_close">Close</button>
-</div>
-<div id="popup_7">
-    <p>Popup 7 stuff here</p>
-    <button class="popup_7_close">Close</button>
-</div>
-<div id="popup_8">
-    <p>Popup 8 stuff here</p>
-    <button class="popup_8_close">Close</button>
-</div>
-
-<div id="hdiv"></div>
-<div id="wdiv"></div>
-<div id="bpdiv"></div>
-<div id="tempdiv"></div>
-<div id="pulsediv"></div>
-
-<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-
-<script src="http://vast-engineering.github.io/jquery-popup-overlay/jquery.popupoverlay.js"></script>
 
 <script>
-    $(document).ready(function() {
-      $('#popup_1').popup();
-    });
 
-    $(document).ready(function() {
-      $('#popup_2').popup();
-    });
-    
-    $(document).ready(function() {
-      $('#popup_3').popup();
-    });
+document.getElementById("popup_3").appendChild(document.getElementById("wdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("hdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("bpdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("tempdiv"));
+document.getElementById("popup_3").appendChild(document.getElementById("pulsediv"));
 
-    $(document).ready(function() {
-      $('#popup_4').popup();
-    });
-    
-    $(document).ready(function() {
-      $('#popup_5').popup();
-    });
-
-    $(document).ready(function() {
-      $('#popup_6').popup();
-    });
-    
-    $(document).ready(function() {
-      $('#popup_7').popup();
-    });
-
-    $(document).ready(function() {
-      $('#popup_8').popup();
-    });
-</script>
-
-<script>
-document.getElementById("date").innerHTML = Date();
-</script>
-
-<script type="text/javascript">
-function showStuff(text) {
-    if (document.getElementById(text).style.display === 'block') {
-        document.getElementById(text).style.display = 'none';
-    }
-    else {
-        document.getElementById(text).style.display = 'block';
-    }
-}
-</script>
-
-<script>
 document.getElementById("weight").innerHTML = "Weight: " + obs_data.weight[obs_data.weight.length-1].value + "kg";
 document.getElementById("height").innerHTML = "Height: " + obs_data.height[obs_data.height.length-1].value + "cm";
 document.getElementById("bmi").innerHTML = "BMI: " + Math.round(bmi_calc(obs_data.height[obs_data.height.length-1].value, obs_data.weight[obs_data.weight.length-1].value));
@@ -563,11 +582,6 @@ document.getElementById("vital_bp").innerHTML = "Blood Pressure: " + obs_data.sy
 document.getElementById("vital_temp").innerHTML = "Body Temperature: " + obs_data.body_temperature[obs_data.body_temperature.length-1].value + "C";
 document.getElementById("vital_pulse").innerHTML = "Pulse: " + obs_data.heart_beat[obs_data.heart_beat.length-1].value + "bpm";
 
-document.getElementById("popup_3").appendChild(document.getElementById("wdiv"));
-document.getElementById("popup_3").appendChild(document.getElementById("hdiv"));
-document.getElementById("popup_3").appendChild(document.getElementById("bpdiv"));
-document.getElementById("popup_3").appendChild(document.getElementById("tempdiv"));
-document.getElementById("popup_3").appendChild(document.getElementById("pulsediv"));
 
 </script>
 

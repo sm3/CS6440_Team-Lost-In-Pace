@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.UriDt;
 import ca.uhn.fhir.rest.client.BaseClient;
 import ca.uhn.fhir.rest.client.IGenericClient;
+import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import ca.uhn.fhir.rest.server.EncodingEnum;
 
@@ -407,6 +411,25 @@ public class FHIRDataParser {
   	   observations.addAll(response.getResources(Observation.class));
   	}
   	return observations;
+	}
+	
+	public List<MedicationPrescription> getMedicationsForPatient (String id) {
+				
+		Bundle response = client
+	    		.search()
+	    		.forResource(MedicationPrescription.class)
+	    		.where(MedicationPrescription.PATIENT.hasId(id))
+	    		.execute();
+		
+		List<MedicationPrescription> medication_prescription = response.getResources(MedicationPrescription.class);
+		
+		while (!response.getLinkNext().isEmpty()) {
+		  	   // load next page
+		  	   response = client.loadPage().next(response).execute();
+		  	 medication_prescription.addAll(response.getResources(MedicationPrescription.class));
+		  	}
+		  	return medication_prescription;
+				
 	}
 
 	 

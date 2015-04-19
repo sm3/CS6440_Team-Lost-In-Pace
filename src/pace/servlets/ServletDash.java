@@ -1,6 +1,7 @@
 package pace.servlets;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
 import pace.logic.FHIRDataParser;
 import ca.uhn.fhir.model.dstu.composite.QuantityDt;
@@ -57,6 +60,8 @@ public class ServletDash extends HttpServlet {
 			
 			JSONObject value;
 			
+			String last_weight = null;
+			
 			while(itr.hasNext())
 			{
 				Observation o = itr.next();
@@ -75,6 +80,9 @@ public class ServletDash extends HttpServlet {
 		
 						
 						if (obs_name.equals(obs_array[0])){
+							last_weight = q.getValue().getValueAsString();
+							System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+							System.out.println("last weight : " + last_weight);
 							weight.add(value);
 						}
 						if (obs_name.equals(obs_array[1])){
@@ -105,6 +113,7 @@ public class ServletDash extends HttpServlet {
 			data_obs_json.put("heart_beat", heart_beat);
 			
 			request.setAttribute("data_obs_json", data_obs_json);
+			
 			
 		}
 		catch (Exception e) {

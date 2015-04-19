@@ -1,15 +1,20 @@
 package unitTests;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -18,6 +23,11 @@ import pace.logic.*;
 import pace.util.*;
 import static org.junit.Assert.*;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.ContainerFactory;
+import org.json.simple.parser.JSONParser;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -173,7 +183,7 @@ public class contextTest {
 		
 	}
 	
-	*/
+	
 	
 	@Test
 	public void testGetPatientByID()
@@ -196,7 +206,7 @@ public class contextTest {
 		}
 	}
 
-	/*
+	
 	
 	@Test
 	public void testgetPatientObservation()
@@ -241,5 +251,32 @@ public class contextTest {
 	
 	*/
 	
+	@Test
+	public void testgetPatientMedication() {
+		
+		
+		try {
+			 
+			FHIRDataParser dp = new FHIRDataParser();
+			List<MedicationPrescription> med_pres = dp.getMedicationsForPatient("Patient/"+resid);
+			System.out.println("Total Observations : "+ med_pres.size());
+			Iterator<MedicationPrescription> itr = med_pres.iterator();
+			while(itr.hasNext())
+			{
+				MedicationPrescription m = itr.next();
+				System.out.println("MedicationPrescription Resource name: " + m.getResourceName());
+				System.out.println("MedicationPrescription Date Written : " + m.getDateWrittenElement().getValueAsString());		
+			}
+			
+			
+			
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+		
 
 }
