@@ -210,7 +210,7 @@ function showStuff(text) {
             }
             else {
                 return '<div style="background:#fd9; padding:10px; border-style:solid">' +
-                       '<a href="/Pace-3/ServletDash?doctor=${doctors}' +
+                       '<a href="/Pace/ServletDash?doctor=${doctors}' +
                        '&pat_id=' + patient_ids[data.getValue(row, 0)] +
                        '&test=' + data.getValue(row, 1) + 
                        '&color=' + data.getValue(row, 3) +

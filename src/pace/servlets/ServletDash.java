@@ -137,7 +137,7 @@ public class ServletDash extends HttpServlet {
 							heart_beat.add(value);
 						}
 						
-						if (i >= 50){
+						if (i >= 60){
 							break;
 						}
 						i+=1;
@@ -224,7 +224,7 @@ public class ServletDash extends HttpServlet {
 			
 			while(m_itr.hasNext())
 			{
-				if (j >= 3){
+				if (j >= 8){
 					break;
 				}
 				j+=1;

@@ -87,26 +87,21 @@ public class ServletOne extends HttpServlet {
 			
 			while(itr.hasNext())
 			{
-				if (i >= 20){
+				if (i >= 27){
 					break;
 				}
 				i+=1;
 				
 				ca.uhn.fhir.model.dstu.resource.Patient p = itr.next();
 				
-				//pat = new JSONObject();
 	    		String pat_name = p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep();
-	    		//pat.put("patientname", pat_name);
-	    		//pats.add(pat);
 	    			    		
 	    		System.out.println("++++++++++++++++++Printing++++++++++++++++++");				
 				System.out.println("Patient name: " + p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep());
 				System.out.println("Patient id : " + p.getIdentifierFirstRep().getValue());
 				
 				String p_id = p.getIdentifierFirstRep().getValue().toString();
-				
-				//pat_ids.put(pat_name, p_id);
-				
+								
 				try {				 
 					List<Observation> obs = dp.getAllObservationsForPatient("Patient/" + p_id);
 					Iterator<Observation> obs_itr = obs.iterator();
@@ -117,9 +112,6 @@ public class ServletOne extends HttpServlet {
 						
 						if (Arrays.asList(obs_array).contains(obs_name)){
 							
-							//test = new JSONObject();
-							//test.put("value", obs_name);
-							//test_arr.add(test);
 							System.out.println("Observation name : " + o.getName().getCodingFirstRep().getDisplay().getValue());
 				    		
 							QuantityDt q = (QuantityDt) o.getValue();
@@ -148,7 +140,6 @@ public class ServletOne extends HttpServlet {
 									duplicate_test.add(obs_name + " - " + pat_name);
 								}
 							}
-							//break;
 						}
 					}	
 				}

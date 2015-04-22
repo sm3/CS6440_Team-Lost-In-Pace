@@ -281,7 +281,7 @@ function showStuff(text) {
     var options = {
       title: 'Weight', 
       hAxis: {title: 'Visit'},
-      vAxis: {title: 'kg', maxValue: 200, minValue: 50},
+      vAxis: {title: 'kg'},
       width: 900,
       height: 500
     };
@@ -514,7 +514,7 @@ function rand_gender() {
 
 function add_med_pop() {
 	med_info = "";
-	for (var i = 0; i < 3; i++) {
+	for (var i = 0; i < meds_data.medication.length; i++) {
 		med_info += "<br><b>Medication Name</b>: " + meds_data.medication[i].value +
 					"<br><b>Date Written</b>: " + meds_data.date_written[i].value +
 					"<br><b>Prescriber</b>: " + meds_data.prescriber[i].value +
