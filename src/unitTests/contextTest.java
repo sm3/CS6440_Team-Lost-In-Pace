@@ -206,7 +206,7 @@ public class contextTest {
 		}
 	}
 
-	
+	*/
 	
 	@Test
 	public void testgetPatientObservation()
@@ -249,7 +249,7 @@ public class contextTest {
 	}
 
 	
-	*/
+	/*
 	
 	@Test
 	public void testgetPatientPrescriptions()
@@ -288,6 +288,8 @@ public class contextTest {
 		}
 		
 	}
-		
+	
+	
+	*/
 
 }

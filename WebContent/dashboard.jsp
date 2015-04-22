@@ -192,46 +192,31 @@ div#error {
         </div>
     </button>
 
-    <button class="popup_5_open">
-        <h2>Heading 5</h2>
-        <div class="desc">Add a description here</div>
+    <button class="popup_5_open" id="test1_square">
+        <h2>${test1_name} Test</h2>
+        <div class="desc">${test1_name} test results: ${test1_value}${test1_units}<br><br></div>
     </button>
-    <button class="popup_6_open">
-        <h2>Heading 6</h2>
-        <div class="desc">Add a description here</div>
+    <button class="popup_6_open" id="test2_square">
+        <h2>${test2_name} Test</h2>
+        <div class="desc">${test2_name} test results: ${test2_value}${test2_units}<br><br></div>
     </button>
-    <button class="popup_7_open">
-        <h2>Heading 7</h2>
-        <div class="desc">Add a description here</div>
+    <button class="popup_7_open" id="test3_square">
+        <h2>${test3_name} Test</h2>
+        <div class="desc">${test3_name} test results: ${test3_value}${test3_units}<br><br></div>
     </button>
-    <button class="popup_8_open">
-        <h2>Heading 8</h2>
-        <div class="desc">Add a description here</div>
+    <button class="popup_8_open" id="test4_square">
+        <h2>${test4_name} Test</h2>
+        <div class="desc">${test4_name} test results: ${test4_value}${test4_units}<br><br></div>
     </button>
 
-<div id="popup_1">
-</div>
+
 <div id="popup_2">
 </div>
 <div id="popup_3">
 </div>
 <div id="popup_4">
 </div>
-<div id="popup_5">
-    <button class="popup_5_close">Close</button>
-</div>
-<div id="popup_6">
-    <p>Popup 6 stuff here</p>
-    <button class="popup_6_close">Close</button>
-</div>
-<div id="popup_7">
-    <p>Popup 7 stuff here</p>
-    <button class="popup_7_close">Close</button>
-</div>
-<div id="popup_8">
-    <p>Popup 8 stuff here</p>
-    <button class="popup_8_close">Close</button>
-</div>
+
 
 <div id="wdiv"></div>
 <div id="hdiv"></div>
@@ -245,9 +230,6 @@ var meds_data = JSON.parse('${data_meds_json}');
 </script>
 
 <script>
-    $(document).ready(function() {
-      $('#popup_1').popup();
-    });
 
     $(document).ready(function() {
       $('#popup_2').popup();
@@ -261,21 +243,7 @@ var meds_data = JSON.parse('${data_meds_json}');
       $('#popup_4').popup();
     });
     
-    $(document).ready(function() {
-      $('#popup_5').popup();
-    });
-
-    $(document).ready(function() {
-      $('#popup_6').popup();
-    });
     
-    $(document).ready(function() {
-      $('#popup_7').popup();
-    });
-
-    $(document).ready(function() {
-      $('#popup_8').popup();
-    });
 </script>
 
 <script>
@@ -313,7 +281,7 @@ function showStuff(text) {
     var options = {
       title: 'Weight', 
       hAxis: {title: 'Visit'},
-      vAxis: {title: 'kg'},
+      vAxis: {title: 'kg', maxValue: 200, minValue: 50},
       width: 900,
       height: 500
     };
@@ -591,13 +559,19 @@ var x = vitals_color(last_sysbp, last_diabp, last_temp, last_pulse);
 var gen = rand_gender();
 var dob = rand_date();
 document.getElementById("pat_div").innerHTML = "Gender: " + gen + 
-													"<br>Date of Birth: " + dob;
-
+											"<br>Date of Birth: " + dob;
+											
 document.getElementById("med_div").innerHTML = "Medication Name: " + meds_data.medication[0].value +
 											"<br>Medication Name: " + meds_data.medication[1].value +
 											"<br>Medication Name: " + meds_data.medication[2].value;
 											
 var add_meds = add_med_pop();
+
+document.getElementById("test1_square").style.background = "${test1_color}";
+document.getElementById("test2_square").style.background = "${test2_color}";
+document.getElementById("test3_square").style.background = "${test3_color}";
+document.getElementById("test4_square").style.background = "${test4_color}";
+
 
 </script>
 

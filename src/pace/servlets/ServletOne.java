@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,11 +22,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import ca.uhn.fhir.model.dstu.composite.QuantityDt;
+import ca.uhn.fhir.model.dstu.resource.Condition;
+import ca.uhn.fhir.model.dstu.resource.Observation;
 import pace.logic.FHIRContext;
 import pace.logic.FHIRDataParser;
 import pace.logic.Pace;
 import pace.logic.PacePatient;
 import pace.logic.PersistenceService;
+import pace.util.ColorScheme;
 import pace.util.EntityManagerFactory;
 
 /**
@@ -56,34 +62,101 @@ public class ServletOne extends HttpServlet {
 			JSONArray pats = new JSONArray();
 			JSONObject pat;
 			
+			JSONObject json_tests = new JSONObject();
+			JSONArray test_arr = new JSONArray();
+			JSONObject test;
+			
+			JSONObject json_colors = new JSONObject();
+			JSONArray color_arr = new JSONArray();
+			JSONObject color;
+			
+			
 			JSONObject pat_ids = new JSONObject();
+			
+			
+			String[] obs_array =  new String[] {"BNP", "MRI", "CKMB", "ECG", "Chest X-Ray",
+					"CT Chest", "LDL", "HDL", "HbA1c", "Protein Urine", "Sodium Urine",
+					"FDG PET CT Scan", "TSH" };
+			
+			ColorScheme color_value = new ColorScheme();
+			
+			ArrayList duplicate_test = new ArrayList();
 			
 			
 			int i = 0;
 			
 			while(itr.hasNext())
 			{
+				if (i >= 20){
+					break;
+				}
+				i+=1;
+				
 				ca.uhn.fhir.model.dstu.resource.Patient p = itr.next();
 				
-				pat = new JSONObject();
+				//pat = new JSONObject();
 	    		String pat_name = p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep();
-	    		pat.put("patientname", pat_name);
-	    		//pat.put("patient_id", p.getIdentifierFirstRep().getValue().toString());
-	    		pats.add(pat);
-	    		
+	    		//pat.put("patientname", pat_name);
+	    		//pats.add(pat);
+	    			    		
 	    		System.out.println("++++++++++++++++++Printing++++++++++++++++++");				
 				System.out.println("Patient name: " + p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep());
 				System.out.println("Patient id : " + p.getIdentifierFirstRep().getValue());
 				
+				String p_id = p.getIdentifierFirstRep().getValue().toString();
 				
+				//pat_ids.put(pat_name, p_id);
 				
-				pat_ids.put(pat_name, p.getIdentifierFirstRep().getValue().toString());
-				
-				
-				if (i >= 130){
-					break;
+				try {				 
+					List<Observation> obs = dp.getAllObservationsForPatient("Patient/" + p_id);
+					Iterator<Observation> obs_itr = obs.iterator();
+					while(obs_itr.hasNext())
+					{
+						Observation o = obs_itr.next();
+						String obs_name = o.getName().getCodingFirstRep().getDisplay().getValue();
+						
+						if (Arrays.asList(obs_array).contains(obs_name)){
+							
+							//test = new JSONObject();
+							//test.put("value", obs_name);
+							//test_arr.add(test);
+							System.out.println("Observation name : " + o.getName().getCodingFirstRep().getDisplay().getValue());
+				    		
+							QuantityDt q = (QuantityDt) o.getValue();
+	
+							if(q!=null)
+							{
+								if (!duplicate_test.contains(obs_name + " - " + pat_name)) {
+									System.out.println("Observation value : " + (q.getValue().getValueAsString()));
+									int my_color = color_value.getColorValue(obs_name, q.getValue().getValueAsString());
+									System.out.println("Color: " + my_color);
+									
+									pat = new JSONObject();
+									pat.put("patientname", obs_name + " - " + pat_name);
+						    		pats.add(pat);
+						    		
+						    		pat_ids.put(obs_name + " - " + pat_name, p_id);
+									
+									test = new JSONObject();
+									test.put("value", obs_name);
+									test_arr.add(test);
+									
+									color = new JSONObject();
+									color.put("value", Integer.toString(my_color));
+									color_arr.add(color);
+									
+									duplicate_test.add(obs_name + " - " + pat_name);
+								}
+							}
+							//break;
+						}
+					}	
 				}
-				i+=1;
+				catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				
 			}
 			
@@ -92,6 +165,11 @@ public class ServletOne extends HttpServlet {
 			
 			request.setAttribute("pat_ids", pat_ids);
 			
+			json_tests.put("Tests", test_arr);
+			request.setAttribute("json_tests", json_tests);
+			
+			json_colors.put("Colors", color_arr);
+			request.setAttribute("json_colors", json_colors);
 						
 			
 		}

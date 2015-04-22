@@ -1,6 +1,7 @@
 package pace.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import ca.uhn.fhir.model.dstu.resource.MedicationPrescription;
 import ca.uhn.fhir.model.dstu.resource.Observation;
 import pace.logic.FHIRContext;
 import pace.logic.FHIRDataParser;
+import pace.util.ColorScheme;
 
 /**
  * Servlet implementation class ServletSearchId
@@ -37,6 +39,26 @@ public class ServletSearchId extends HttpServlet {
 		String doctor = request.getParameter("doctor");
 		String search_id = request.getParameter("search_id");
 		String name = null;
+		
+		String test1_value = "";
+		String test2_value = "";
+		String test3_value = "";
+		String test4_value = "";
+		
+		String test1_color = "";
+		String test2_color = "";
+		String test3_color = "";
+		String test4_color = "";
+		
+		String test1_units = "";
+		String test2_units = "";
+		String test3_units = "";
+		String test4_units = "";
+		
+		String test1_name = "";
+		String test2_name = "";
+		String test3_name = "";
+		String test4_name = "";
 		
 		FHIRContext ctx = new FHIRContext();
 		String[] input = new String[]{"Patient"};
@@ -74,6 +96,13 @@ public class ServletSearchId extends HttpServlet {
 				String[] obs_array =  new String[] {"Body Weight", "Body Height", "Systolic BP", "Diastolic BP",
 													"Body Temperature", "Heart Beat"};
 				
+				String[] tests_array =  new String[] {"BNP", "MRI", "CKMB", "ECG", "Chest X-Ray",
+						"CT Chest", "LDL", "HDL", "HbA1c", "Protein Urine", "Sodium Urine",
+						"FDG PET CT Scan", "TSH" };
+				
+				ArrayList max_tests = new ArrayList();
+
+				
 				JSONObject data_obs_json = new JSONObject();
 				
 				JSONArray weight = new JSONArray();
@@ -84,6 +113,8 @@ public class ServletSearchId extends HttpServlet {
 				JSONArray heart_beat = new JSONArray();
 				
 				JSONObject value;
+				
+				ColorScheme color_value = new ColorScheme();
 				
 				int i = 0;
 							
@@ -101,8 +132,7 @@ public class ServletSearchId extends HttpServlet {
 						{
 							value = new JSONObject();
 							value.put("value", q.getValue().getValueAsString());
-							System.out.println("Observation value : " + (q.getValue()).getValueAsString());
-			
+							System.out.println("Observation value : " + (q.getValue().getValueAsString()));		
 							
 							if (obs_name.equals(obs_array[0])){
 								weight.add(value);
@@ -123,13 +153,55 @@ public class ServletSearchId extends HttpServlet {
 								heart_beat.add(value);
 							}
 							
-							if (i >= 75){
+							if (i >= 50){
 								break;
 							}
 							i+=1;
 							
 						}
 					}
+					
+					if (Arrays.asList(tests_array).contains(obs_name)){
+						
+						QuantityDt q_t = (QuantityDt) o.getValue();
+		
+						if(q_t != null)
+						{
+							if (!max_tests.contains(obs_name)) {
+								if (max_tests.size() == 0){
+									test1_value = q_t.getValue().getValueAsString();
+									test1_color = color_value.colorValueToName(color_value.getColorValue(obs_name, q_t.getValue().getValueAsString()));
+									test1_units = q_t.getUnits().getValueAsString();
+									test1_name = obs_name;
+									max_tests.add(obs_name);
+								}
+								else if (max_tests.size() == 1){
+									test2_value = q_t.getValue().getValueAsString();
+									test2_color = color_value.colorValueToName(color_value.getColorValue(obs_name, q_t.getValue().getValueAsString()));
+									test2_units = q_t.getUnits().getValueAsString();
+									test2_name = obs_name;
+									max_tests.add(obs_name);
+								}
+								else if (max_tests.size() == 2){
+									test3_value = q_t.getValue().getValueAsString();
+									test3_color = color_value.colorValueToName(color_value.getColorValue(obs_name, q_t.getValue().getValueAsString()));
+									test3_units = q_t.getUnits().getValueAsString();
+									test3_name = obs_name;
+									max_tests.add(obs_name);
+								}
+								else if (max_tests.size() == 3){
+									test4_value = q_t.getValue().getValueAsString();
+									test4_color = color_value.colorValueToName(color_value.getColorValue(obs_name, q_t.getValue().getValueAsString()));
+									test4_units = q_t.getUnits().getValueAsString();
+									test4_name = obs_name;
+									max_tests.add(obs_name);
+								}
+							}		
+						}
+					}
+					
+					
+					
 				}
 				
 				data_obs_json.put("weight", weight);
@@ -168,6 +240,11 @@ public class ServletSearchId extends HttpServlet {
 				
 				while(m_itr.hasNext())
 				{
+					if (j >= 3){
+						break;
+					}
+					j+=1;
+					
 					MedicationPrescription o = m_itr.next();
 					
 					String med = o.getMedication().getDisplay().getValue();
@@ -194,11 +271,6 @@ public class ServletSearchId extends HttpServlet {
 						status.add(stat_value);
 						System.out.println("Status : " + o.getStatus().getValue());
 						
-						if (j > 3){
-							break;
-						}
-						j+=1;
-						
 						//med_names.add(med);
 					
 					//}
@@ -220,6 +292,26 @@ public class ServletSearchId extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			request.setAttribute("test1_value", test1_value);
+			request.setAttribute("test2_value", test2_value);
+			request.setAttribute("test3_value", test3_value);
+			request.setAttribute("test4_value", test4_value);
+			
+			request.setAttribute("test1_color", test1_color);
+			request.setAttribute("test2_color", test2_color);
+			request.setAttribute("test3_color", test3_color);
+			request.setAttribute("test4_color", test4_color);
+			
+			request.setAttribute("test1_name", test1_name);
+			request.setAttribute("test2_name", test2_name);
+			request.setAttribute("test3_name", test3_name);
+			request.setAttribute("test4_name", test4_name);
+			
+			request.setAttribute("test1_units", test1_units);
+			request.setAttribute("test2_units", test2_units);
+			request.setAttribute("test3_units", test3_units);
+			request.setAttribute("test4_units", test4_units);
 			
 			
 			request.setAttribute("doctors", doctor);
