@@ -414,5 +414,39 @@ public class FHIRDataParser {
   	return observations;
 	}
 
-	 
+	 /**
+	  * returns all prescriptions for patient - HAPI
+	  * @param id
+	  * @return
+	  */
+		
+		
+		
+		public List<MedicationPrescription> getAllPrescriptionsForPatient(String id) {
+		   
+			String searchstr = serverBase + "MedicationPrescription?subject:Patient=" + id;
+		    UriDt searchurl = new UriDt(searchstr);
+		    Bundle response = client.search(searchurl);
+
+		    List<MedicationPrescription> prescriptions = response.getResources(MedicationPrescription.class);
+		    //Limiting number of records to a 100 
+		       /*while (!response.getLinkNext().isEmpty()) {
+	    	  
+	    	   response = client.loadPage().next(response).execute();
+	    	   prescriptions.addAll(response.getResources(MedicationPrescription.class));
+	    	}*/
+		    return prescriptions;
+		}
+		
+		
+		/**
+		 * returns prescription for the given id - HAPI
+		 * @param id
+		 * @return
+		 */
+		
+		public MedicationPrescription getPrescriptionById(String id) {
+			IdDt rxid = new IdDt(id);
+	        return client.read(MedicationPrescription.class, rxid);
+		} 
 }
