@@ -1,4 +1,7 @@
-URL=https://taurus.i3l.gatech.edu:8443/HealthPort/fhir/
+
+URL=https://healthport.i3l.gatech.edu:8443/dstu1/fhir/
+
+//URL=https://taurus.i3l.gatech.edu:8443/HealthPort/fhir/
 
 //URL=http://fhirtest.uhn.ca/baseDstu1
 
