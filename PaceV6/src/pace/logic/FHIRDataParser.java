@@ -345,11 +345,12 @@ public class FHIRDataParser {
       
       System.out.println("Bundle :" + response.toString());
       List<Patient> patients = response.getResources(Patient.class);
-      while (!response.getLinkNext().isEmpty()) {
+      //Limiting number of records to a 100 
+      /*while (!response.getLinkNext().isEmpty()) {
      	   // load next page
      	   response = client.loadPage().next(response).execute();
      	   patients.addAll(response.getResources(Patient.class));
-     	}
+     	}*/
       return patients;
 	}
 	/**
@@ -375,11 +376,12 @@ public class FHIRDataParser {
 		
 		
 	    List<Condition> conditions = response.getResources(Condition.class);
-	    while (!response.getLinkNext().isEmpty()) {
+	  //Limiting number of records to a 100 
+	       /*while (!response.getLinkNext().isEmpty()) {
   	   // load next page
   	   response = client.loadPage().next(response).execute();
   	   conditions.addAll(response.getResources(Condition.class));
-  	}
+  		}*/
 	    return conditions;
 	}
 	/**
@@ -403,11 +405,12 @@ public class FHIRDataParser {
 	   
 	  
 	    List<Observation> observations = response.getResources(Observation.class);
-  	while (!response.getLinkNext().isEmpty()) {
+	  //Limiting number of records to a 100 
+	       /*while (!response.getLinkNext().isEmpty()) {
   	   // load next page
   	   response = client.loadPage().next(response).execute();
   	   observations.addAll(response.getResources(Observation.class));
-  	}
+  	}*/
   	return observations;
 	}
 
