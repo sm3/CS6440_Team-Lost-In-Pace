@@ -100,7 +100,7 @@ div#chart_div {
     <div id="main">
         <a class="box" href="#" onclick="window.print();">Print</a>
         <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
-        <a class="box" href="/Pace-3/index.jsp" >Home</a> 
+        <a class="box" href="/Pace/index.jsp" >Home</a> 
         <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
         <input type="text" name="search_id"></br>
         <input type="hidden" name="doctor" value="${doctors}">
