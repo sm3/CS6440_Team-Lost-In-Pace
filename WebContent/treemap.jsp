@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Prototype 1</title>
+<title>Pace - Treemap</title>
 
 <style>
 form#text1 {
@@ -42,9 +42,10 @@ a.box {
 }
 
 div#welcome {
-    float:left;
-    left: 20%;
-    position: relative;
+    position: absolute;
+	float: left;
+	left: 40%;
+	top: 5px;
 }
 
 p#wel {
@@ -77,7 +78,7 @@ p#name {
 div#chart_div {
     position: absolute;
     top: 160px;
-    left: 15%;
+    left: 22%;
 }
 
 </style> 
@@ -99,8 +100,10 @@ div#chart_div {
     <div id="main">
         <a class="box" href="#" onclick="window.print();">Print</a>
         <a class="box" href="#" onclick="showStuff('text1');">Search</a> 
-        <form id="text1">Enter Search Criteria:</br> 
-        <input type="text"></br>
+        <a class="box" href="/Pace/index.jsp" >Home</a> 
+        <form id="text1" action="ServletSearchId">Search by Patient ID:</br> 
+        <input type="text" name="search_id"></br>
+        <input type="hidden" name="doctor" value="${doctors}">
         <input type="submit" value="Submit">
         </form>
         <p id="date"></p>
@@ -134,43 +137,54 @@ function showStuff(text) {
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var arr = [
-                   ['id',                           'Parent',          'Patient (size)', 'Urgency (color)'],
-                   ['Chronic Disease',               null,                  0,                     0],
-                   ['High Blood Pressure',          'Chronic Disease',      0,                     0],
-                   ['Diabetes',                     'Chronic Disease',      0,                     0],
-                   ['Obesity',                      'Chronic Disease',      0,                     0],
-                   ['HA1C',                         'Diabetes',             0,                     0],
-                   ['Kidney Function Exam',         'Diabetes',             0,                     0],
-                   ['Oral Glucose Tolerance Test',  'Diabetes',             0,                     0],
-                   ['Random Plasma Glucose',        'Diabetes',             0,                     0],
-                   ['Fasting Plasma Glucose Test',  'Diabetes',             0,                     0],
-                   ['Blood Pressure Exam',          'High Blood Pressure',  0,                     0],
-                   ['EKG',                          'High Blood Pressure',  0,                     0],
-                   ['ECG',                          'High Blood Pressure',  0,                     0],
-                   ['Blood Glucose Test',           'High Blood Pressure',  0,                     0],
-                   ['BMI Exam',                     'Obesity',              0,                     0],
+                   ['id',                                     'Parent',                     'Patient (size)', 'Urgency (color)'],
+                   ['Chronic Disease',                         null,                                   0,                     0],
+                   ['Hypertension',                           'Chronic Disease',                       0,                     0],
+                   ['Diabetes',                               'Chronic Disease',                       0,                     0],
+                   ['Chronic Obstructive Pulmonary Disease',  'Chronic Disease',                       0,                     0],
+                   ['Chronic Congestive Heart Failure',       'Chronic Disease',                       0,                     0],
+                   ['BNP',                                    'Chronic Congestive Heart Failure',      0,                     0],
+                   ['MRI',                                    'Chronic Congestive Heart Failure',      0,                     0],
+                   ['CKMB',                                   'Chronic Congestive Heart Failure',      0,                     0],
+                   ['ECG',                                    'Chronic Obstructive Pulmonary Disease', 0,                     0],
+                   ['Chest X-Ray',                            'Chronic Obstructive Pulmonary Disease', 0,                     0],
+                   ['CT Chest',                               'Chronic Obstructive Pulmonary Disease', 0,                     0],
+                   ['LDL',                                    'Diabetes',                              0,                     0],
+                   ['HDL',                                    'Diabetes',                              0,                     0],
+                   ['HbA1c',                                  'Diabetes',                              0,                     0],
+                   ['Protein Urine',                          'Diabetes',                              0,                     0],
+                   ['Blood Pressure',                         'Hypertension',                          0,                     0],
+                   ['Sodium Urine',                           'Hypertension',                          0,                     0],
+                   ['FDG PET CT Scan',                        'Hypertension',                          0,                     0],
+                   ['TSH',                                    'Hypertension',                          0,                     0]
                  ];
         
-        var tests = ['HA1C', 'Kidney Function Exam', 'Oral Glucose Tolerance Test', 'Random Plasma Glucose', 
-                     'Fasting Plasma Glucose Test', 'Blood Pressure Exam', 'EKG', 'ECG', 'Blood Glucose Test', 'BMI Exam'
-                     ];
-        
         var patients = JSON.parse('${json}');
+                
+        var patient_ids = JSON.parse('${pat_ids}');
+        
+        var tests = JSON.parse('${json_tests}');
+        
+        var colors = JSON.parse('${json_colors}');
+        
+        var test_arr = ['BNP','MRI','CKMB','ECG','Chest X-Ray','CT Chest','LDL','HDL','HbA1c','Protein Urine','Sodium Urine','FDG PET CT Scan','TSH'];
         
         var i;
-        for (i = 1; i < 49; i++) {
-        	var temp = [patients.Patients[i].patientname, tests[(Math.floor(Math.random() * tests.length))], 1, Math.floor((Math.random() * 5) + 1)];
+        for (i = 0; i < colors.Colors.length; i++) {
+        	var temp = [patients.Patients[i].patientname, tests.Tests[i].value, 1, parseInt(colors.Colors[i].value)];
         	arr.push(temp);
         }
+        
+        console.log(arr);
         
         var data = google.visualization.arrayToDataTable(arr);
 
         var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
         
         var options = {
-          minColor: '#f00',
-          midColor: '#FFFF00',
-          maxColor: '#0d0',
+          minColor: 'green',
+          midColor: 'yellow',
+          maxColor: 'red',
           headerHeight: 15,
           fontColor: 'black',
           generateTooltip: showFullTooltip,
@@ -182,20 +196,29 @@ function showStuff(text) {
         tree.draw(data, options);
         
         function showFullTooltip(row, size, value) {
-            if ( (data.getValue(row, 0) === 'Diabetes') || (data.getValue(row, 0) === 'Obesity') ||
-                 (data.getValue(row, 0) === 'High Blood Pressure') || 
-                 (data.getValue(row, 0) === 'Chronic Disease') ) {
-                return null;
+            if ( (data.getValue(row, 0) === 'Diabetes') || (data.getValue(row, 0) === 'Hypertension') ||
+                 (data.getValue(row, 0) === 'Chronic Obstructive Pulmonary Disease') || 
+                 (data.getValue(row, 0) === 'Chronic Congestive Heart Failure') ) {
+                return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                '<span style="font-family:Courier"><b>Chronic Disease: ' + data.getValue(row, 0) +
+                '<br>Drill down to Test(s)' + 
+                '</b></span><br>';
             }
-            else if ( tests.indexOf(data.getValue(row, 0)) > -1 ){
+            else if ((data.getValue(row, 0) === 'Chronic Disease')) {
+            	return null;
+            }
+            else if ( test_arr.indexOf(data.getValue(row, 0)) > -1 ){
             	return '<div style="background:#fd9; padding:10px; border-style:solid">' +
                 '<span style="font-family:Courier"><b>Test: ' + data.getValue(row, 0) +
-                '<br>Drill down to patient(s)' + 
+                '<br>Drill down to Patient(s)' + 
                 '</b></span><br>';
             }
             else {
                 return '<div style="background:#fd9; padding:10px; border-style:solid">' +
-                       '<a href="/Pace-3/ServletDash?doctor=${doctors}&name=' + data.getValue(row, 0) + 
+                       '<a href="/Pace/ServletDash?doctor=${doctors}' +
+                       '&pat_id=' + patient_ids[data.getValue(row, 0)] +
+                       '&test=' + data.getValue(row, 1) + 
+                       '&color=' + data.getValue(row, 3) +
                        '"><span style="font-family:Courier"><b>Go to Patient Dashboard: ' + 
                        data.getValue(row, 0) +
                        '</b></span></a><br>';

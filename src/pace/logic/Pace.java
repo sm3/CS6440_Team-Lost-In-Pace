@@ -4,8 +4,9 @@ package pace.logic;
 
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import pace.util.*;
+
+
+
 
 import java.sql.SQLException;
 
@@ -14,10 +15,10 @@ import org.h2.tools.Server;
 
 
 
-import java.util.ArrayList;
-import java.util.List;
 
-import pace.util.EntityManagerFactory;
+
+
+
 
 public class Pace {
 	// persistence context
@@ -43,9 +44,10 @@ public void init() {
 		
 }
 
+
 public void stopServer()
 {
-		//close everything
+		//close em
 		em.close();
 		
 		// stop h2

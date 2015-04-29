@@ -2,8 +2,16 @@ package pace.servlets;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +22,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import ca.uhn.fhir.model.dstu.composite.QuantityDt;
+import ca.uhn.fhir.model.dstu.resource.Condition;
+import ca.uhn.fhir.model.dstu.resource.Observation;
 import pace.logic.FHIRContext;
 import pace.logic.FHIRDataParser;
+import pace.logic.Pace;
+import pace.logic.PacePatient;
+import pace.logic.PersistenceService;
+import pace.util.ColorScheme;
+import pace.util.EntityManagerFactory;
 
 /**
  * Servlet implementation class ServletOne
@@ -34,32 +50,117 @@ public class ServletOne extends HttpServlet {
 		
 		FHIRContext ctx = new FHIRContext();
 		String[] input = new String[]{"Patient"};
-		ctx.setInput(ctx.constructInputString(input,  "/"));
-		try
-		{
-			HttpURLConnection conn = ctx.sendGetRequest();
+		ctx.setInput(ctx.constructInputString(input,  "/?&_count=100"));
+		try {
+			 
 			FHIRDataParser dp = new FHIRDataParser();
-			String result = ctx.readRespone();
-			HashMap<String, Object> map = dp.parseJSON(result);
-			
-			System.out.println("Getting submap ");
-			HashMap<Integer, String> patients = dp.getPatients(result);
-			System.out.println("++++++++++++++++++Printing++++++++++++++++++");
+			List<ca.uhn.fhir.model.dstu.resource.Patient> pts = dp.getAllPatients();
+			System.out.println("Total patients : "+ pts.size());
+			Iterator<ca.uhn.fhir.model.dstu.resource.Patient> itr = pts.iterator();
 			
 			JSONObject json = new JSONObject();
 			JSONArray pats = new JSONArray();
 			JSONObject pat;
 			
-			for (Integer key : patients.keySet()) {
-				pat = new JSONObject();
-				pat.put("patientname", patients.get(key));
-				pats.add(pat);
-				System.out.println(key);
-				System.out.println(patients.get(key));
+			JSONObject json_tests = new JSONObject();
+			JSONArray test_arr = new JSONArray();
+			JSONObject test;
+			
+			JSONObject json_colors = new JSONObject();
+			JSONArray color_arr = new JSONArray();
+			JSONObject color;
+			
+			
+			JSONObject pat_ids = new JSONObject();
+			
+			
+			String[] obs_array =  new String[] {"BNP", "MRI", "CKMB", "ECG", "Chest X-Ray",
+					"CT Chest", "LDL", "HDL", "HbA1c", "Protein Urine", "Sodium Urine",
+					"FDG PET CT Scan", "TSH" };
+			
+			ColorScheme color_value = new ColorScheme();
+			
+			ArrayList duplicate_test = new ArrayList();
+			
+			
+			int i = 0;
+			
+			while(itr.hasNext())
+			{
+				if (i >= 27){
+					break;
+				}
+				i+=1;
+				
+				ca.uhn.fhir.model.dstu.resource.Patient p = itr.next();
+				
+	    		String pat_name = p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep();
+	    			    		
+	    		System.out.println("++++++++++++++++++Printing++++++++++++++++++");				
+				System.out.println("Patient name: " + p.getName().get(0).getFamilyFirstRep() + ", " +  p.getName().get(0).getGivenFirstRep());
+				System.out.println("Patient id : " + p.getIdentifierFirstRep().getValue());
+				
+				String p_id = p.getIdentifierFirstRep().getValue().toString();
+								
+				try {				 
+					List<Observation> obs = dp.getAllObservationsForPatient("Patient/" + p_id);
+					Iterator<Observation> obs_itr = obs.iterator();
+					while(obs_itr.hasNext())
+					{
+						Observation o = obs_itr.next();
+						String obs_name = o.getName().getCodingFirstRep().getDisplay().getValue();
+						
+						if (Arrays.asList(obs_array).contains(obs_name)){
+							
+							System.out.println("Observation name : " + o.getName().getCodingFirstRep().getDisplay().getValue());
+				    		
+							QuantityDt q = (QuantityDt) o.getValue();
+	
+							if(q!=null)
+							{
+								if (!duplicate_test.contains(obs_name + " - " + pat_name)) {
+									System.out.println("Observation value : " + (q.getValue().getValueAsString()));
+									int my_color = color_value.getColorValue(obs_name, q.getValue().getValueAsString());
+									System.out.println("Color: " + my_color);
+									
+									pat = new JSONObject();
+									pat.put("patientname", obs_name + " - " + pat_name);
+						    		pats.add(pat);
+						    		
+						    		pat_ids.put(obs_name + " - " + pat_name, p_id);
+									
+									test = new JSONObject();
+									test.put("value", obs_name);
+									test_arr.add(test);
+									
+									color = new JSONObject();
+									color.put("value", Integer.toString(my_color));
+									color_arr.add(color);
+									
+									duplicate_test.add(obs_name + " - " + pat_name);
+								}
+							}
+						}
+					}	
+				}
+				catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
 			}
 			
 			json.put("Patients", pats);
 			request.setAttribute("json", json);
+			
+			request.setAttribute("pat_ids", pat_ids);
+			
+			json_tests.put("Tests", test_arr);
+			request.setAttribute("json_tests", json_tests);
+			
+			json_colors.put("Colors", color_arr);
+			request.setAttribute("json_colors", json_colors);
 						
 			
 		}
@@ -67,6 +168,7 @@ public class ServletOne extends HttpServlet {
 		{
 			System.out.println(e.toString());
 		}
+		
 		request.setAttribute("doctors", doctor);
 		RequestDispatcher rd = request.getRequestDispatcher("treemap.jsp");
 		rd.forward(request, response);

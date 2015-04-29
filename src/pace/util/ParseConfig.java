@@ -13,11 +13,27 @@ public class ParseConfig {
 	
 	
 
-	private static final String path = "/home/michael/git/pace3/config.txt";
+	//private static final String path = ".\\config.txt";
 	
 	public ParseConfig()
 	{
-		File file = new File(path);
+		
+		
+		
+		url = "https://healthport.i3l.gatech.edu:8443/dstu1/fhir/";
+		//url = "https://taurus.i3l.gatech.edu:8443/HealthPort/fhir/";
+		format = "JSON";
+		trustStorePasswd = "changeit";
+		String separator = System.getProperty("file.separator");
+		System.out.println("separator "+ separator);
+		String java_home = System.getProperty("java.home");
+
+		trustStore = java_home + separator + "lib" + separator + "security" + separator + "cacerts";
+		
+		System.out.println("trustStore "+ trustStore);
+		System.out.println("trustStorePasswd" + trustStorePasswd);
+		
+		/*File file = new File(path);
 		
 		try
 		{
@@ -57,8 +73,6 @@ public class ParseConfig {
 					trustStorePasswd=line.next();
 					System.out.println("trustStorePassword from config "+ trustStorePasswd);
 				}
-
-
 				
 				
 			}
@@ -67,7 +81,7 @@ public class ParseConfig {
 		catch(Exception e)
 		{
 			System.out.println(e.toString());
-		}
+		}*/
 	}
 
 	public String getUrl() {
@@ -86,9 +100,9 @@ public class ParseConfig {
 		this.format = format;
 	}
 
-	public static String getPath() {
-		return path;
-	}
+	//public static String getPath() {
+		//return path;
+	//}
 		
 	public String getTrustStore() {
 		return trustStore;
