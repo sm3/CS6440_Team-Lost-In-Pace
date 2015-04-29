@@ -20,15 +20,15 @@ public class ParseConfig {
 		
 		
 		
-		//url = "https://healthport.i3l.gatech.edu:8443/dstu1/fhir/";
-		url = "https://taurus.i3l.gatech.edu:8443/HealthPort/fhir/";
+		url = "https://healthport.i3l.gatech.edu:8443/dstu1/fhir/";
+		//url = "https://taurus.i3l.gatech.edu:8443/HealthPort/fhir/";
 		format = "JSON";
 		trustStorePasswd = "changeit";
 		String separator = System.getProperty("file.separator");
 		System.out.println("separator "+ separator);
 		String java_home = System.getProperty("java.home");
 
-		trustStore = java_home + separator + "jre" + separator + "lib" + separator + "security" + separator + "cacerts";
+		trustStore = java_home + separator + "lib" + separator + "security" + separator + "cacerts";
 		
 		System.out.println("trustStore "+ trustStore);
 		System.out.println("trustStorePasswd" + trustStorePasswd);

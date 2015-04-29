@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Prototype 1</title>
+<title>Pace - Treemap</title>
 
 <style>
 form#text1 {
@@ -198,14 +198,19 @@ function showStuff(text) {
         function showFullTooltip(row, size, value) {
             if ( (data.getValue(row, 0) === 'Diabetes') || (data.getValue(row, 0) === 'Hypertension') ||
                  (data.getValue(row, 0) === 'Chronic Obstructive Pulmonary Disease') || 
-                 (data.getValue(row, 0) === 'Chronic Congestive Heart Failure') ||
-                 (data.getValue(row, 0) === 'Chronic Disease') ) {
-                return null;
+                 (data.getValue(row, 0) === 'Chronic Congestive Heart Failure') ) {
+                return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                '<span style="font-family:Courier"><b>Chronic Disease: ' + data.getValue(row, 0) +
+                '<br>Drill down to Test(s)' + 
+                '</b></span><br>';
+            }
+            else if ((data.getValue(row, 0) === 'Chronic Disease')) {
+            	return null;
             }
             else if ( test_arr.indexOf(data.getValue(row, 0)) > -1 ){
             	return '<div style="background:#fd9; padding:10px; border-style:solid">' +
                 '<span style="font-family:Courier"><b>Test: ' + data.getValue(row, 0) +
-                '<br>Drill down to patient(s)' + 
+                '<br>Drill down to Patient(s)' + 
                 '</b></span><br>';
             }
             else {
